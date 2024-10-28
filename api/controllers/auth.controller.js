@@ -33,7 +33,7 @@ export const signup = async (req, res, next) =>{
 export const signin = async (req, res, next) =>{
     const { email, password} = req.body;
 
-    if ( email || !password || email === '' || password === '') {
+    if ( !email || !password || email === '' || password === '') {
         next(errorHandler(400, 'All fields are required'));
     }
 
@@ -51,10 +51,10 @@ export const signin = async (req, res, next) =>{
 
         const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET);
 
-        const {password: password, ...rest} = validUser._doc;
+        const {password: pass, ...rest} = validUser._doc;
 
-        res.status(200).cookies('access_token', token, {
-            httpOnly: true}).json(rest)
+        res.status(200).cookie('access_token', token, {
+            httpOnly: true}).json(rest);
     } catch (error) {
         next(error)
     }
